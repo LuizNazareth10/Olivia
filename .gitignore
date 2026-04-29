@@ -1,0 +1,46 @@
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Logs and temp
+*.log
+*.tmp
+*.temp
+
+# Root/workspace caches
+pip-cache/
+
+# Flutter / Dart artifacts (workspace-level catch-all)
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/build/
+
+# Node (if tooling is added later)
+node_modules/
+
+# Local env files
+.env
+.env.*

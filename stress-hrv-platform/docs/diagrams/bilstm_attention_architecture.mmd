@@ -1,0 +1,17 @@
+flowchart TD
+    A[Input HRV sequence\nshape B x 30 x 4\nfeatures rmssd sdnn pnn50 mean_hr] --> B[BiLSTM\ninput_dim 4\nhidden_dim 64\nlayers 2\nbidirectional true]
+    B --> C[Temporal output\nshape B x 30 x 128]
+    C --> D[Attention MLP\nLinear 128 to 64\nTanh\nLinear 64 to 1]
+    D --> E[Attention weights\nSoftmax over time axis]
+    E --> F[Context vector\nweighted sum\nshape B x 128]
+    F --> G[Classifier\nLinear 128 to 64\nReLU\nDropout 0.2\nLinear 64 to 1\nSigmoid]
+    G --> H[Stress probability\nshape B\nrange 0 to 1]
+
+    H --> I{Decision threshold}
+    I -->|p >= 0.70| J[high_stress = 1]
+    I -->|p < 0.70| K[high_stress = 0]
+
+    classDef core fill:#1f2937,stroke:#94a3b8,color:#e2e8f0;
+    classDef out fill:#312e81,stroke:#a5b4fc,color:#e0e7ff;
+    class A,B,C,D,E,F,G core;
+    class H,I,J,K out;

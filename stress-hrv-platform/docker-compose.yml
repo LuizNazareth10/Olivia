@@ -1,0 +1,51 @@
+services:
+  edge-service:
+    build: ./edge_service
+    container_name: edge-service
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - FOG_URL=http://fog-orchestrator:8002
+      - PORT=8001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  fog-orchestrator:
+    build: ./fog_orchestrator
+    container_name: fog-orchestrator
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    environment:
+      - CLOUD_URL=http://cloud-federated-api:8080
+      - PORT=8002
+    volumes:
+      - ./fog_orchestrator/data:/app/data
+      - ./fog_orchestrator/models:/app/models
+    depends_on:
+      - cloud-federated-api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  cloud-federated-api:
+    build: ./cloud_federated
+    container_name: cloud-federated-api
+    restart: unless-stopped
+    command: uvicorn src.inference.api:app --host 0.0.0.0 --port 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./cloud_federated/data:/app/data
+      - ./cloud_federated/models:/app/models
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
